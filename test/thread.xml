@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<makePointCloud> 
+    <pcInput edgeManifest="/home/drmorr/invlim/proj/camera/edgeocl/test/thread-edge/d4-01/edgeManifest.xml"
+             distManifest="/home/drmorr/invlim/proj/camera/distance/test/thread-dist/distanceFile.xml" />
+    <pcOutput name="thread-d4.pcd" format="ascii"/>
+    <pcFilter movingAverageWindow="5" noiseThreshold="5" zAxisSegmentSkip="3" zAxisShearAngle="-0.25"/>
+    <pcDistance scaleBy="1" interpolationMethod="linear" rangeValue="mean" />
+</makePointCloud>

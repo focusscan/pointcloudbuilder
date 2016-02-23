@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<makePointCloud> 
+    <pcInput edgeManifest="/home/drmorr/invlim/proj/camera/edgeocl/test/Troll-edge/d4-01/edgeManifest.xml"
+             distManifest="/home/drmorr/invlim/proj/camera/distance/test/Troll-dist/distanceFile.xml" />
+    <pcOutput name="Troll-d4.pcd" format="ascii"/>
+    <pcFilter movingAverageWindow="5" noiseThreshold="5" zAxisSegmentSkip="3" />
+    <pcDistance scaleBy="1" interpolationMethod="quadratic" rangeValue="mean" />
+</makePointCloud>
