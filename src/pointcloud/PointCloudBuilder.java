@@ -22,9 +22,10 @@ public class PointCloudBuilder {
 		
 		try {
 			Config config = new Config(Paths.get(args[0]));
-			EdgeFile edgeManifest = new EdgeFile(config.getEdgeManifestPath());
-			DistanceFile distManifest = new DistanceFile(config.getDistManifestPath());
-			Path scanDir = config.getEdgeManifestPath().getParent();
+			Path configDir = Paths.get(args[0]).getParent();
+			EdgeFile edgeManifest = new EdgeFile(configDir.resolve(config.getEdgeManifestPath()));
+			DistanceFile distManifest = new DistanceFile(configDir.resolve(config.getDistManifestPath()));
+			Path scanDir = configDir.resolve(config.getEdgeManifestPath()).getParent();
 			
 			ArrayList<Point3D> output = new ArrayList<Point3D>();
 			
@@ -112,7 +113,7 @@ public class PointCloudBuilder {
 			}
 			
 			System.out.println(numPoints);
-			PCDWriter.writePointCloud(config.getOutputFile().toString(), output);
+			PCDWriter.writePointCloud(configDir.resolve(config.getOutputFile().toString()), output);
 		} catch (Exception e ) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

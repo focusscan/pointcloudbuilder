@@ -3,14 +3,12 @@ package pointcloud;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class PCDWriter {
 	
-	public static void writePointCloud(String filename, ArrayList<Point3D> points) throws IOException {
-		Path output = Paths.get(filename);
+	public static void writePointCloud(Path output, ArrayList<Point3D> points) throws IOException {
 		ArrayList<String> lines = new ArrayList<String>(Arrays.asList(
 				"# .PCD v.7 - Point Cloud Data file format",
 				"VERSION .7",
