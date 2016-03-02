@@ -17,6 +17,7 @@ public class PointCloudBuilder {
 		
 		if (args.length < 1) {
 			System.out.println("Usage: PointCloud config-file");
+			return;
 		}
 		
 		try {
