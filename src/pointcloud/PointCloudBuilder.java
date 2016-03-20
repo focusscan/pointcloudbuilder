@@ -75,14 +75,10 @@ public class PointCloudBuilder {
 				// Crop in by 5 pixels to remove edge noise
 				for (int i = 5; i < dims[0]-5; i++) {
 					for (int j = 5; j < dims[1]-5; j++) {						
-						
-						// I don't totally understand why this needs to be reversed here, but it produces bad output if you 
-						// use the (more natural) i * dims[1] + j for the index.  It must have something to do with how the
-						// data is stored in the HDF array, but it seems odd that the heatmap application didn't have the same
-						// problem...
-						if (avgPixelValues[(int)(j * dims[0] + i)] / config.getMovingAverageWindow() > config.getNoiseThreshold()) {	// TODO not quite correct at the ends
+						double intensity = avgPixelValues[(int)(j * dims[0] + i)] / config.getMovingAverageWindow();
+						if (intensity > config.getNoiseThreshold()) {
 							++numPoints;
-							pc.addPoint(i, j, imageNum - 1);
+							pc.addPoint(i, j, imageNum - 1, intensity);
 						}
 					}
 				}
@@ -90,7 +86,36 @@ public class PointCloudBuilder {
 
 			for (int y = 0; y < pc.getHeight(); y++) {
 				for (int x = 0; x < pc.getWidth(); x++) {
+					ArrayList<Range> rs = pc.getSlugs(x, y);
+					if (null == rs || 0 == rs.size())
+						continue;
 					
+					float distance = 0;
+					double intensity = 0;
+					for (Range r : rs) {
+						double d1 = distances.getDistance(r.start);
+						double d2 = distances.getDistance(r.end);
+						
+						distance += (float) (2 * d1 * d2 / (d1 + d2));
+						if (r.intensity > intensity)
+							intensity = r.intensity;
+					}
+					distance = distance / rs.size();
+					intensity = Math.min(255, intensity);
+					
+					// Compute the width/height (in meters) of the x and y axes for the current plane
+					float width = (float) (36.0 / distManifest.get35MMFocalLength() * distance);
+					float height = (float) (24.0 / distManifest.get35MMFocalLength() * distance);
+					
+					int color = (int) (0x00ff0000 * (intensity / 255) + 0x000000ff * (1 - intensity / 255));
+
+					output.add(new Point3D(
+								width / dims[0] * x - width,
+								height - height / dims[1] * y,
+								(float)(Math.tan(config.getZAxisShear()) * (height - height / dims[1] * y) - distance * config.getDistanceScalar()),
+								color));
+					
+					/*
 					// All the points are stored in "slugs" in the z-axis.  Each slug gets compressed to a single point at its center of mass
 					ArrayList<Range> xySlugs = pc.getSlugs(x, y, config.getZAxisSegmentSkip());
 					for (Range r : xySlugs) {
@@ -109,6 +134,7 @@ public class PointCloudBuilder {
 									height - height / dims[1] * y,
 									(float)(Math.tan(config.getZAxisShear()) * (height - height / dims[1] * y) - distance * config.getDistanceScalar())));
 					}
+					*/
 				}
 			}
 			

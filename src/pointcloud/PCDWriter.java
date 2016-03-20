@@ -12,9 +12,9 @@ public class PCDWriter {
 		ArrayList<String> lines = new ArrayList<String>(Arrays.asList(
 				"# .PCD v.7 - Point Cloud Data file format",
 				"VERSION .7",
-				"FIELDS x y z",
-				"SIZE 4 4 4",
-				"TYPE F F F",
+				"FIELDS x y z rgb",
+				"SIZE 4 4 4 4",
+				"TYPE F F F F",
 				"WIDTH " + points.size(),
 				"HEIGHT 1",
 				"VIEWPOINT 0 0 0 1 0 0 0",
